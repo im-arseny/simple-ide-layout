@@ -7,6 +7,7 @@ var editor: ScriptEditor
 var scripts_item_list: ItemList
 var top_vbox: VBoxContainer
 
+var defaults : Dictionary[StringName, Variant]
 
 func _init(plugin: EditorPlugin, editor: ScriptEditor) -> void:
 	self.plugin = plugin
@@ -19,18 +20,32 @@ func enable() -> void:
 	scripts_item_list = _find_scripts_item_list(editor)
 	
 	if scripts_item_list:
+		defaults[&"parent"] = scripts_item_list.get_parent()
+		defaults[&"size_flags_vertical"] = scripts_item_list.size_flags_vertical
+		defaults[&"custom_minimum_size:y"] = scripts_item_list.custom_minimum_size.y
+		defaults[&"auto_height"] = scripts_item_list.auto_height
+		defaults[&"max_columns"] = 0
+		
 		scripts_item_list.reparent(top_vbox)
 		scripts_item_list.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 		scripts_item_list.custom_minimum_size.y = 48
 		scripts_item_list.auto_height = true
-		scripts_item_list.max_columns = 12
+		scripts_item_list.max_columns = 32
 		
 		# Move to the top of container
 		top_vbox.move_child(scripts_item_list, 1)
 
 
 func disable() -> void:
-	pass
+	if scripts_item_list:
+		if defaults[&"parent"]:
+			scripts_item_list.reparent(defaults[&"parent"])
+		
+		for key in defaults.keys():
+			if key == &"parent":
+				continue
+			
+			scripts_item_list.set(key, defaults[key])
 
 
 func _find_scripts_item_list(root: Node) -> ItemList:
