@@ -1,6 +1,7 @@
 extends SIL_BaseModule
 class_name SIL_ScriptTabsModule
 
+var plugin: EditorPlugin
 var editor: ScriptEditor
 
 var scripts_item_list: ItemList
