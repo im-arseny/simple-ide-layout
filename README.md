@@ -9,3 +9,6 @@ Replaces default side panel in ScriptEditor with the FileSystem Dock, making it 
 
 ### File tabs above the ScriptEditor
 Replacing side panel makes file list disappear, so we moved this part of the UI above the ScriptEditor, again following most modern IDE layout philosophy.
+
+# To Do
+- [ ] Update FileSystem default parent and index when it's moved by user
