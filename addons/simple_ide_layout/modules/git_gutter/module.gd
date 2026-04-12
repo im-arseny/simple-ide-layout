@@ -1,7 +1,11 @@
 extends SIL_BaseModule
 class_name SIL_GITGutter
 
-const GUTTER_NAME = "git_gutter"
+const GUTTER_NAME = &"git_gutter"
+const SETTING_ENABLED = SIMPLE_IDE_LAYOUT + GUTTER_NAME + &"/" + &"enabled"
+const SETTING_ADDED_COLOR = SIMPLE_IDE_LAYOUT + GUTTER_NAME + &"/" + &"added_color"
+const SETTING_DELETED_COLOR = SIMPLE_IDE_LAYOUT + GUTTER_NAME + &"/" + &"deleted_color"
+const SETTING_GUTTER_WIDTH = SIMPLE_IDE_LAYOUT + GUTTER_NAME + &"/" + &"gutter_width"
 
 var editor: ScriptEditor
 var ce: CodeEdit
@@ -9,17 +13,18 @@ var ce: CodeEdit
 var last_result: Dictionary = {}
 var current_script: Script
 
+
 func enable() -> void:
 	default_settings = {
-		"simple_ide/git_gutter/enabled": true,
-		"simple_ide/git_gutter/added_color": Color(0, 1, 0, 1),
-		"simple_ide/git_gutter/deleted_color": Color(1, 0, 0, 1),
-		"simple_ide/git_gutter/gutter_width": 6
+		SETTING_ENABLED: true,
+		SETTING_ADDED_COLOR: Color(0, 1, 0, 1),
+		SETTING_DELETED_COLOR: Color(1, 0, 0, 1),
+		SETTING_GUTTER_WIDTH: 6
 	}
 	
 	_init_editor_settings(default_settings)
 	
-	if not _get_settings(default_settings).get("simple_ide/git_gutter/enabled", true):
+	if not _get_settings(default_settings).get(SETTING_ENABLED, true):
 		return
 	
 	editor = EditorInterface.get_script_editor()
@@ -35,7 +40,7 @@ func disable() -> void:
 	_remove_gutter()
 
 func _on_script_changed(script: Script) -> void:
-	if not _get_settings(default_settings).get("simple_ide/git_gutter/enabled", true):
+	if not _get_settings(default_settings).get(SETTING_ENABLED, true):
 		disable()
 		return
 	
@@ -71,7 +76,7 @@ func _ensure_gutter() -> void:
 	ce.set_gutter_type(0, TextEdit.GUTTER_TYPE_STRING)
 	ce.set_gutter_width(
 		0,
-		_get_settings(self.default_settings).get("simple_ide/git_gutter/gutter_width")
+		_get_settings(self.default_settings).get(SETTING_GUTTER_WIDTH)
 	)
 	ce.set_gutter_draw(0, true)
 
@@ -124,7 +129,7 @@ func _get_git_changed_lines(path: String) -> Dictionary:
 			elif line.begins_with(" "):
 				current_new_line += 1
 
-	return { "added": added, "deleted": deleted }
+	return { "added": added, "deleted": deleted, "changed": []}
 
 func _mark_changed_lines(result: Dictionary) -> void:
 	ce = _get_current_code_edit()
@@ -140,7 +145,7 @@ func _mark_changed_lines(result: Dictionary) -> void:
 			ce.set_line_gutter_item_color(
 				line,
 				gutter,
-				_get_settings(self.default_settings).get("simple_ide/git_gutter/added_color")
+				_get_settings(self.default_settings).get(SETTING_ADDED_COLOR)
 			)
 	for line in result.get("deleted", []):
 		if line >= 0 and line < ce.get_line_count():
@@ -148,7 +153,7 @@ func _mark_changed_lines(result: Dictionary) -> void:
 			ce.set_line_gutter_item_color(
 				line,
 				gutter,
-				_get_settings(self.default_settings).get("simple_ide/git_gutter/deleted_color")
+				_get_settings(self.default_settings).get(SETTING_DELETED_COLOR)
 			)
 
 func _clear_markers() -> void:
