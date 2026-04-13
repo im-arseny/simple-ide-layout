@@ -1,6 +1,7 @@
-# Simple IDE Layout - for Godot 4.6
+# Simple IDE Layout - for Godot 4.6+
 
-Changes the Godot ScriptEditor layout to be more reminiscent of modern IDEs.
+Changes the Godot Script Editor layout to be more in line with modern IDEs.
+Adds features such as a Git gutter.
 
 # Features
 
