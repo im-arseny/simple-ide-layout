@@ -23,12 +23,12 @@ func enable() -> void:
 		SETTING_DELETED_COLOR: Color("#F44336"),
 		SETTING_GUTTER_WIDTH: 6
 	}
-	
+
 	_init_editor_settings(default_settings)
-	
+
 	if not _get_settings(default_settings).get(SETTING_ENABLED, true):
 		return
-	
+
 	editor = EditorInterface.get_script_editor()
 	call_deferred("_connect_editor_signal")
 
@@ -45,14 +45,17 @@ func _on_script_changed(script: Script) -> void:
 	if not _get_settings(default_settings).get(SETTING_ENABLED, true):
 		disable()
 		return
-	
+
 	last_result = {}
 	_clear_markers()
-	
+
 	current_script = script
 	if not script:
 		return
-	
+
+	if script.is_built_in():
+		return
+
 	last_result = _get_git_changed_lines(script.resource_path)
 	_ensure_gutter()
 	_mark_changed_lines(last_result)
@@ -71,8 +74,8 @@ func _ensure_gutter() -> void:
 	for i in ce.get_gutter_count():
 		if ce.get_gutter_name(i) == GUTTER_NAME:
 			return
-	
-	
+
+
 	ce.add_gutter(0)
 	ce.set_gutter_name(0, GUTTER_NAME)
 	ce.set_gutter_type(0, TextEdit.GUTTER_TYPE_STRING)
@@ -103,16 +106,16 @@ func _get_git_changed_lines(path: String) -> Dictionary:
 	var os_path = ProjectSettings.globalize_path(path)
 	var out := []
 	var exit_code := OS.execute("git", ["diff", "--unified=0", os_path], out, true)
-	
+
 	if exit_code != 0:
 		print("Git diff failed for: ", out[0].split('\n')[0].split('.')[0])
 		return {}
-	
+
 	var added: Array = []
 	var deleted: Array = []
 	var modified: Array = []
 	var current_new_line := 0
-	
+
 	for l in out:
 		for raw in l.split("\n"):
 			var line = raw.strip_edges(true, false)
@@ -131,18 +134,18 @@ func _get_git_changed_lines(path: String) -> Dictionary:
 				deleted.append(current_new_line - 1)
 			elif line.begins_with(" "):
 				current_new_line += 1
-	
+
 	var deleted_map : Dictionary = {}
-	
+
 	for line in deleted:
 		deleted_map[line] = true
-	
+
 	for line in added:
 		if deleted_map.has(line):
 			added.erase(line)
 			deleted.erase(line)
 			modified.append(line)
-	
+
 	return { "added": added, "deleted": deleted, "modified": modified}
 
 func _mark_changed_lines(result: Dictionary) -> void:
@@ -153,7 +156,7 @@ func _mark_changed_lines(result: Dictionary) -> void:
 	var gutter = _get_gutter_index()
 	if gutter == -1:
 		return
-	
+
 	for line in result.get("added", []):
 		if line >= 0 and line < ce.get_line_count():
 			ce.set_line_gutter_text(line, gutter, "|")
