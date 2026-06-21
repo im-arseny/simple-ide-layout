@@ -5,8 +5,7 @@ extends SIL_BaseModule
 class_name SIL_ScriptTabsModule
 
 const MULTILINE_TAB_BAR: PackedScene = preload("uid://vjuhunm2uboy")
-const MultilineTabBar := preload("uid://l1rdargfn67o")
-const SplitCodeEdit := preload("uid://boy48rhhyrph")
+const SPLIT_CODE_EDIT := preload("uid://boy48rhhyrph")
 
 #region Setting path const
 const SETTING_CATEGORY_PATH: String = SIMPLE_IDE_LAYOUT + "tabs/"
@@ -263,7 +262,7 @@ func _toggle_split_view() -> void:
 		
 		multiline_tab_bar.set_split(true)
 		
-		var split_edit: CodeEdit = SplitCodeEdit.new_from(base_editor)
+		var split_edit: CodeEdit = SPLIT_CODE_EDIT.new_from(base_editor)
 		var container := PanelContainer.new()
 		container.custom_minimum_size.x = 200
 		container.size_flags_horizontal = Control.SIZE_EXPAND_FILL

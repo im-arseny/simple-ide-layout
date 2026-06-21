@@ -3,6 +3,11 @@
 Changes the Godot Script Editor layout to be more in line with modern IDEs.
 Adds features such as a Git gutter.
 
+# How to Install
+1.Download the repository from GitHub and place the `addons` folder in your project. Then enable it in the Project Settings.
+2.Hide or move the `History` tab to a different location.
+3.You can find the plugin options in the Editor Settings with Advanced Settings enabled.
+
 # Features
 
 ### FileSystem inside ScriptEdtior
