@@ -19,3 +19,13 @@ Replacing side panel makes file list disappear, so we moved this part of the UI 
 
 # To Do
 - [ ] Update FileSystem default parent and index when it's moved by user
+
+# License
+
+This project is licensed under the MIT License. See the
+[LICENSE](addons/simple_ide_layout/LICENSE.txt) file for details.
+
+## Third-party code
+
+The tab bar and split original logic were derived from the Script IDE add-on
+by Marius Hanl and are used under the MIT License.
